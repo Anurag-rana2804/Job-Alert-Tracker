@@ -3,27 +3,26 @@ const cors = require("cors");
 
 const app = express();
 
-// CORS Fix
-app.use(
-  cors({
-    origin: "*", // allow all domains
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"]
-  })
-);
+app.use(cors());
+app.use(express.json());
 
 let alertJobs = [];
 
+// API Route
 app.get("/alerts", (req, res) => {
   res.json(alertJobs);
 });
 
+// Function to update alerts
 function setAlerts(jobs) {
   alertJobs = jobs;
 }
 
-app.listen(5000, () => {
-  console.log("Server running...");
+// Dynamic Railway Port
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on ${PORT}`);
 });
 
 module.exports = setAlerts;
