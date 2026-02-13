@@ -1,14 +1,16 @@
 const puppeteer = require("puppeteer");
-const chromium = require("chrome-aws-lambda");
 
 async function scrapeJobs() {
   try {
+
     const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath:
-        await chromium.executablePath,
-      headless: chromium.headless
+      headless: true,   // important for Railway
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu"
+      ]
     });
 
     const page = await browser.newPage();
@@ -26,63 +28,68 @@ async function scrapeJobs() {
     );
 
     const jobs = await page.evaluate(() => {
+
       const jobCards =
         document.querySelectorAll(
           ".JobSearchCard-item"
         );
 
-      return Array.from(jobCards).map(
-        job => {
-          const titleEl =
-            job.querySelector(
-              ".JobSearchCard-primary-heading a"
-            );
+      return Array.from(jobCards).map(job => {
 
-          const budgetEl =
-            job.querySelector(
-              ".JobSearchCard-secondary-price"
-            );
+        const titleEl =
+          job.querySelector(
+            ".JobSearchCard-primary-heading a"
+          );
 
-          const skillsEl =
-            job.querySelectorAll(
-              ".JobSearchCard-primary-tags a"
-            );
+        const budgetEl =
+          job.querySelector(
+            ".JobSearchCard-secondary-price"
+          );
 
-          return {
-            title: titleEl
-              ? titleEl.innerText
-              : "No Title",
+        const skillsEl =
+          job.querySelectorAll(
+            ".JobSearchCard-primary-tags a"
+          );
 
-            link: titleEl
-              ? "https://www.freelancer.com" +
-                titleEl.getAttribute("href")
-              : "No Link",
+        return {
+          title: titleEl
+            ? titleEl.innerText
+            : "No Title",
 
-            budget: budgetEl
-              ? budgetEl.innerText
-              : "Not Mentioned",
+          link: titleEl
+            ? "https://www.freelancer.com" +
+              titleEl.getAttribute("href")
+            : "No Link",
 
-            skills: skillsEl
-              ? Array.from(skillsEl).map(
-                  s => s.innerText
-                )
-              : [],
+          budget: budgetEl
+            ? budgetEl.innerText
+            : "Not Mentioned",
 
-            postedTime:
-              new Date().toISOString()
-          };
-        }
-      );
+          skills: skillsEl
+            ? Array.from(skillsEl).map(
+                s => s.innerText
+              )
+            : [],
+
+          postedTime:
+            new Date().toISOString()
+        };
+
+      });
+
     });
 
     await browser.close();
+
     return jobs;
 
   } catch (err) {
+
     console.log(
       "Scraper Error:",
       err.message
     );
+
     return [];
   }
 }
