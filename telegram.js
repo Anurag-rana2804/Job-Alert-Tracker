@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const TOKEN = "8563787195:AAEC0LjlE86522VzomR8l3VDk-_EnSsXbnY";
-const CHAT_ID = "-1003525466390";
+const GROUP_ID = "-1003525466390";
 
 async function sendTelegram(message) {
   const url =
