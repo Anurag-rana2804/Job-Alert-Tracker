@@ -2,7 +2,15 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-app.use(cors());
+
+// CORS Fix
+app.use(
+  cors({
+    origin: "*", // allow all domains
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+  })
+);
 
 let alertJobs = [];
 
@@ -15,9 +23,7 @@ function setAlerts(jobs) {
 }
 
 app.listen(5000, () => {
-  console.log(
-    "Server running → http://localhost:5000"
-  );
+  console.log("Server running...");
 });
 
 module.exports = setAlerts;
