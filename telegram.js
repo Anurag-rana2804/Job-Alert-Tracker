@@ -1,18 +1,22 @@
 const axios = require("axios");
 
-const TOKEN = process.env.TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+const TOKEN = "8563787195:AAEC0LjlE86522VzomR8l3VDk-_EnSsXbnY";
+const CHAT_ID = "-5207968079";
 
 async function sendTelegram(message) {
-  const url = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+  const url =
+    `https://api.telegram.org/bot${TOKEN}/sendMessage`;
 
   try {
     await axios.post(url, {
-      chat_id: CHAT_ID,
+      chat_id: GROUP_ID,
       text: message
     });
-  } catch (error) {
-    console.log("Telegram Error:", error.message);
+  } catch (err) {
+    console.log(
+      "Telegram Error:",
+      err.message
+    );
   }
 }
 

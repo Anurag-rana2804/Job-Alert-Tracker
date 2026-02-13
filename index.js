@@ -1,10 +1,13 @@
 const fs = require("fs");
+
 const scrapeJobs = require("./scraper");
 const matchJobs = require("./matcher");
 const sendTelegram = require("./telegram");
 const setAlerts = require("./server");
+
 const cron = require("node-cron");
 
+// Load seen jobs
 let seenJobs = [];
 
 if (fs.existsSync("seenJobs.json")) {
@@ -17,11 +20,13 @@ async function runSystem() {
   console.log("Checking jobs...");
 
   const jobs = await scrapeJobs();
-  const matchedJobs = matchJobs(jobs);
+  const matchedJobs =
+    matchJobs(jobs);
 
   const newAlerts = [];
 
   matchedJobs.forEach(job => {
+
     if (!seenJobs.includes(job.link)) {
 
       const message = `
@@ -39,10 +44,16 @@ async function runSystem() {
       seenJobs.push(job.link);
       newAlerts.push(job);
 
-      console.log("New:", job.title);
+      console.log(
+        "New:",
+        job.title
+      );
 
     } else {
-      console.log("Skipped:", job.title);
+      console.log(
+        "Skipped:",
+        job.title
+      );
     }
   });
 
@@ -54,8 +65,11 @@ async function runSystem() {
   setAlerts(newAlerts);
 }
 
+// Run once
 runSystem();
 
-cron.schedule("*/5 * * * *", () => {
-  runSystem();
-});
+// Run every 30 mins
+cron.schedule(
+  "*/5 * * * *",
+  runSystem
+);

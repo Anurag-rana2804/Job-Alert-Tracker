@@ -33,14 +33,12 @@ const teamSkills = [
   "Email Campaign",
   "ChatGPT",
   "Generative AI",
-  "Data Annotating"
+  "Data Annotating",
 ];
 
 function matchJobs(jobs) {
-  return jobs.filter(job =>
-    job.skills.some(skill =>
-      teamSkills.includes(skill)
-    )
+  return jobs.filter((job) =>
+    job.skills.some((skill) => teamSkills.includes(skill)),
   );
 }
 

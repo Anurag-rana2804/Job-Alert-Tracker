@@ -14,11 +14,10 @@ function setAlerts(jobs) {
   alertJobs = jobs;
 }
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running → ${PORT}`);
+app.listen(5000, () => {
+  console.log(
+    "Server running → http://localhost:5000"
+  );
 });
-
 
 module.exports = setAlerts;
